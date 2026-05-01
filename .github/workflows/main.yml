@@ -1,0 +1,61 @@
+name: Deploy MERN App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Backend
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: npm install
+
+      - name: Create backend env file
+        working-directory: ./server
+        run: |
+          cat > .env <<EOF
+          ${{ secrets.SERVER_ENV }}
+          EOF
+
+      - name: Restart backend with PM2
+        working-directory: ./server
+        run: |
+          pm2 restart chat-backend || pm2 start server.js --name chat-backend
+          pm2 save
+
+      # Frontend
+      - name: Install frontend dependencies
+        working-directory: ./client
+        run: npm install
+
+      - name: Create frontend env file
+        working-directory: ./client
+        run: |
+          cat > .env <<EOF
+          ${{ secrets.CLIENT_ENV }}
+          EOF
+
+      - name: Build frontend
+        working-directory: ./client
+        run: npm run build
+
+        
+
+      - name: Deploy frontend to Nginx
+        run: |
+          sudo rm -rf /var/www/html/*
+          sudo cp -r ./client/dist/* /var/www/html/
+          sudo systemctl restart nginx
