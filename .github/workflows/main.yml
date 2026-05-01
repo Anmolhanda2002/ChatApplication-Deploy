@@ -1,4 +1,4 @@
-name: Deploy chatapplicaiton
+name: Deploy chatapplication
 
 on:
   push:
@@ -52,10 +52,8 @@ jobs:
         working-directory: ./client
         run: npm run build
 
-        
-
       - name: Deploy frontend to Nginx
         run: |
-          sudo rm -rf /var/www/html/*
-          sudo cp -r ./client/dist/* /var/www/html/
+          sudo rm -rf /usr/share/nginx/html/*
+          sudo cp -r ./client/dist/* /usr/share/nginx/html/
           sudo systemctl restart nginx
