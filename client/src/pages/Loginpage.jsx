@@ -35,7 +35,7 @@ const Loginpage = () => {
       >
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {isLogin ? "Welcome to Chat App" : "Create Account"}
           </h1>
         </div>
 
