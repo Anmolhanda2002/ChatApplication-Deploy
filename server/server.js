@@ -16,6 +16,7 @@ export const io =  new Server(server,{
     
 })
 
+
 export const userSocketMap = {};
 
 io.on("connection",(socket)=>{
@@ -37,7 +38,11 @@ socket.on("disconnect",()=>{
 
 //setup middleware
 app.use(express.json({limit:"4mb"}))
-app.use(cors());
+app.use(cors({
+  origin: "http://54.166.237.4/",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true
+}));
 
 
 //connection db
